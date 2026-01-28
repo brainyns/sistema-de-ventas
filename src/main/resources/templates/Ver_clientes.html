@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/ver_cliente.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="fragments/nav :: nav"></div>
+    
+    <div class="container">
+        <h2>
+            <i class="fa-solid fa-users"></i>
+            Clientes Registrados
+        </h2>
+
+        <div class="admin-info">
+            <p><strong>Administrador:</strong> <span th:text="${adminUsuario}"></span></p>
+        </div>
+
+        <!-- BUSCADOR -->
+        <div class="search-section">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput"
+                    placeholder="🔍 Buscar cliente por identificación..."
+                    maxlength="20"
+                >
+                <button class="btn-search" onclick="buscarCliente()">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Buscar
+                </button>
+                <button class="btn-clear" onclick="limpiarBusqueda()">
+                    <i class="fa-solid fa-xmark"></i>
+                    Limpiar
+                </button>
+            </div>
+        </div>
+
+        <!-- ACCIONES SUPERIORES -->
+        <div class="top-actions">
+            <a th:href="@{/clientes/agregar}" class="btn-primary">
+                <i class="fa-solid fa-user-plus"></i>
+                Agregar Nuevo Cliente
+            </a>
+            <a th:href="@{/clientes/reporte}" class="btn-secondary">
+                <i class="fa-solid fa-chart-line"></i>
+                Ver Reporte
+            </a>
+            <a th:href="@{/clientes/reporte/pdf}" class="btn-secondary">
+                <i class="fa-solid fa-file-pdf"></i>
+                Exportar PDF
+            </a>
+        </div>
+
+        <!-- TABLA -->
+        <div class="seccion">
+            <h3>Lista de Clientes</h3>
+            
+            <div class="tabla-container">
+                <table class="tabla-clientes" id="tablaClientes">
+                    <thead>
+                        <tr>
+                            <th>IDENTIFICACIÓN</th>
+                            <th>NOMBRE</th>
+                            <th>APELLIDO</th>
+                            <th>TELÉFONO</th>
+                            <th>EMAIL</th>
+                            <th>DIRECCIÓN</th>
+                            <th>ID ADMIN</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaBody">
+                        <!-- Los datos se cargan desde el servidor -->
+                        <tr th:each="cliente : ${clientes}" 
+                            th:data-id="${cliente.identificacion}"
+                            th:data-nombre="${cliente.Nombre}"
+                            th:data-apellido="${cliente.Apellido}"
+                            th:data-telefono="${cliente.Telefono}"
+                            th:data-email="${cliente.Email}"
+                            th:data-direccion="${cliente.Direccion}"
+                            th:data-admin="${cliente.administrador != null ? cliente.administrador.idAdministrador : '-'}">
+                            <td th:text="${cliente.identificacion}"></td>
+                            <td th:text="${cliente.Nombre}"></td>
+                            <td th:text="${cliente.Apellido}"></td>
+                            <td th:text="${cliente.Telefono != null ? cliente.Telefono : '-'}"></td>
+                            <td th:text="${cliente.Email != null ? cliente.Email : '-'}"></td>
+                            <td th:text="${cliente.Direccion != null ? cliente.Direccion : '-'}"></td>
+                            <td th:text="${cliente.administrador != null ? cliente.administrador.idAdministrador : '-'}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noResults" class="no-results" style="display: none;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <p>No se encontraron clientes con esa identificación</p>
+            </div>
+
+            <div class="results-info" id="resultsInfo"></div>
+
+            <!-- PAGINACIÓN -->
+            <div class="pagination" id="paginacion"></div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/ver_cliente.js}"></script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Nueva Venta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/venta.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+   
+</head>
+<body>
+
+    <div th:replace="fragments/nav :: nav"></div>
+
+<div class="container mt-4">
+    <!-- Alertas -->
+    <div th:if="${mensaje != null and mensaje != ''}" class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-check-circle"></i> <span th:text="${mensaje}">Mensaje</span>
+        </div>
+        <div>
+            <button class="btn btn-danger btn-sm me-2" onclick="descargarPDF()">
+                <i class="fas fa-file-pdf"></i> Descargar Factura PDF
+            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+    <div th:if="${error != null and error != ''}" class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-triangle"></i> <span th:text="${error}">Error</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card shadow-lg">
+        <div class="card-header text-white">
+            <h3 class="mb-0"><i class="fas fa-cash-register"></i> Registrar Nueva Venta</h3>
+        </div>
+        <div class="card-body">
+            
+            <!-- SECCIÓN CLIENTE -->
+            <div class="mb-4">
+                <h5><i class="fas fa-user text-primary"></i> Datos del Cliente</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">ID Cliente:</label>
+                        <div class="input-group">
+                            <input type="number" id="clienteId" class="form-control" placeholder="Ingrese ID">
+                            <button class="btn btn-primary" onclick="cargarCliente()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div id="infoCliente" class="alert alert-info" style="display:none; margin-top: 8px;">
+                            <strong>Cliente cargado:</strong> <span id="nombreCliente"></span><br>
+                            <small>Tel: <span id="telefonoCliente"></span> | Email: <span id="emailCliente"></span></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- SECCIÓN PRODUCTOS -->
+            <div class="mb-4">
+                <h5><i class="fas fa-box text-success"></i> Agregar Productos</h5>
+                
+                <div class="row mb-3">
+                    <!-- Búsqueda por ID -->
+                    <div class="col-md-6">
+                        <label class="form-label">Buscar por ID Producto:</label>
+                        <div class="input-group">
+                            <input type="number" id="productoId" class="form-control" placeholder="ID">
+                            <button class="btn btn-success" onclick="cargarProducto()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón Seleccionar Producto -->
+                    <div class="col-md-6">
+                        <label class="form-label">O selecciona visualmente:</label>
+                        <button class="btn btn-select-product w-100" onclick="abrirModalProductos()">
+                            <i class="fas fa-th-large"></i> Seleccionar Producto
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Producto encontrado por ID -->
+                <div id="productoEncontrado" class="producto-busqueda" style="display:none;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong id="nombreProductoBusqueda"></strong><br>
+                            <small>Stock: <span id="stockProductoBusqueda"></span> | Precio + IVA: $<span id="precioProductoBusqueda"></span></small>
+                        </div>
+                        <div class="d-flex gap-2 align-items-center">
+                            <label class="mb-0">Cantidad:</label>
+                            <input type="number" id="cantidadBusqueda" class="form-control" style="width:80px;" value="1" min="1">
+                            <button class="btn btn-success" onclick="agregarProductoBuscado()">
+                                <i class="fas fa-cart-plus"></i> Agregar al Carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- CARRITO -->
+            <div class="mb-4">
+                <h5><i class="fas fa-shopping-cart text-info"></i> Carrito de Compras</h5>
+                <div id="carrito">
+                    <p class="text-muted text-center py-3">No hay productos agregados</p>
+                </div>
+            </div>
+
+            <!-- TOTAL -->
+            <div class="total-section text-center mb-4">
+                <i class="fas fa-calculator"></i> TOTAL CON IVA (19%): <span id="totalGeneral">$0,00</span>
+            </div>
+
+            <!-- MÉTODO DE PAGO -->
+            <div class="mb-4">
+                <h5><i class="fas fa-credit-card text-warning"></i> Método de Pago</h5>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="metodoPago" id="efectivo" value="Efectivo" checked>
+                    <label class="btn btn-outline-success" for="efectivo">
+                        <i class="fas fa-money-bill-wave"></i> Efectivo
+                    </label>
+
+                    <input type="radio" class="btn-check" name="metodoPago" id="tarjeta" value="Tarjeta">
+                    <label class="btn btn-outline-primary" for="tarjeta">
+                        <i class="fas fa-credit-card"></i> Tarjeta
+                    </label>
+
+                    <input type="radio" class="btn-check" name="metodoPago" id="transferencia" value="Transferencia">
+                    <label class="btn btn-outline-info" for="transferencia">
+                        <i class="fas fa-exchange-alt"></i> Transferencia
+                    </label>
+                </div>
+            </div>
+
+            <!-- BOTONES -->
+            <div class="text-center">
+                <button class="btn btn-success btn-lg" onclick="mostrarResumen()">
+                    <i class="fas fa-check-circle"></i> Confirmar Venta
+                </button>
+                <a href="/inicio" class="btn btn-secondary btn-lg ms-2">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Seleccionar Productos -->
+<div class="modal fade" id="modalProductos" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h5 class="modal-title"><i class="fas fa-shopping-bag"></i> Seleccionar Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="search-box">
+                    <input type="text" id="buscarProducto" class="form-control form-control-lg" 
+                           placeholder="🔍 Buscar por nombre, tipo o modelo..." 
+                           onkeyup="filtrarProductos()">
+                </div>
+                <div class="modal-body-productos">
+                    <table class="table table-hover table-productos mb-0">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Modelo</th>
+                                <th>Precio + IVA</th>
+                                <th>Stock</th>
+                                <th>Cantidad</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaProductos">
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Resumen -->
+<div class="modal fade" id="modalResumen" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fas fa-file-invoice"></i> Vista Previa de Factura</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <h4>TIENDA REPUESTOS</h4>
+                    <p class="text-muted">FACTURA DE VENTA</p>
+                </div>
+                <div id="contenidoFactura"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="confirmarVentaFinal()">
+                    <i class="fas fa-check"></i> Confirmar Venta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/format-utils.js}"></script>
+<script th:src="@{/js/venta.js}"></script>
+
+</body>
+</html>

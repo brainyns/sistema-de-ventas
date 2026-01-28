@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Administradores</title>
+     <link rel="stylesheet" th:href="@{/css/lista_admin.css}">
+     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div th:replace="fragments/nav :: nav"></div>
+<div class="container">
+    <!-- Alertas de éxito -->
+    <div th:if="${mensaje}" class="alert alert-success">
+        <span class="alert-icon">✓</span>
+        <span th:text="${mensaje}"></span>
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+
+    <!-- Alertas de error -->
+    <div th:if="${error}" class="alert alert-error">
+        <span class="alert-icon">✕</span>
+        <span th:text="${error}"></span>
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+
+    <!-- Alertas de advertencia -->
+    <div th:if="${advertencia}" class="alert alert-warning">
+        <span class="alert-icon">⚠</span>
+        <span th:text="${advertencia}"></span>
+        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+    </div>
+
+    <!-- Título principal -->
+    <h2>
+        <i class="fas fa-users-cog"></i>
+        Gestión de Administradores
+    </h2>
+    
+    <p class="subtitulo">Administra los usuarios con acceso al sistema</p>
+
+    <!-- Info box (opcional) -->
+    <div class="info-box">
+        <i class="fas fa-info-circle"></i>
+        <div>
+            <h4>Información importante</h4>
+            <p>Recuerda que los administradores tienen acceso completo al sistema. Asegúrate de asignar credenciales seguras.</p>
+        </div>
+    </div>
+
+    <!-- Tabla de administradores -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th><i class="fas fa-hashtag"></i> ID</th>
+                    <th><i class="fas fa-user"></i> Usuario</th>
+                    <th><i class="fas fa-envelope"></i> Email</th>
+                    <th><i class="fas fa-cogs"></i> Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="admin : ${admins}">
+                    <td th:text="${admin.idAdministrador}"></td>
+                    <td>
+                        <strong th:text="${admin.usuario}"></strong>
+                    </td>
+                    <td th:text="${admin.email}"></td>
+                    <td class="actions">
+                        <a th:href="@{'/admin/editar?id=' + ${admin.idAdministrador}}" class="edit">
+                            <i class="fas fa-edit"></i>
+                            Editar
+                        </a>
+                        <a href="#" 
+                           class="delete" 
+                           th:attr="data-id=${admin.idAdministrador},data-usuario=${admin.usuario}"
+                           onclick="confirmarEliminacion(this); return false;">
+                            <i class="fas fa-trash-alt"></i>
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(admins)}">
+                    <td colspan="4" class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No hay administradores registrados en el sistema</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Formulario de administrador -->
+    <div class="seccion">
+        <h3>
+            <i th:class="${admin.idAdministrador != null ? 'fas fa-user-edit' : 'fas fa-user-plus'}"></i>
+            <span th:text="${admin.idAdministrador != null ? 'Editar Administrador' : 'Nuevo Administrador'}"></span>
+        </h3>
+        
+        <form th:action="@{/admin/guardar}" 
+              th:object="${admin}" 
+              method="post" 
+              id="formAdmin"
+              onsubmit="return validarFormulario(this)">
+            
+            <input type="hidden" th:field="*{idAdministrador}">
+            
+            <div class="grid-container">
+                <div class="form-grupo">
+                    <label for="usuario">
+                        <i class="fas fa-user"></i>
+                        Usuario <span>*</span>
+                    </label>
+                    <input type="text" 
+                           id="usuario"
+                           th:field="*{usuario}" 
+                           required 
+                           minlength="3"
+                           maxlength="50"
+                           placeholder="Ej: admin01">
+                    <span class="error" id="errorUsuario" style="display: none;"></span>
+                </div>
+
+                <div class="form-grupo">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i>
+                        Email <span>*</span>
+                    </label>
+                    <input type="email" 
+                           id="email"
+                           th:field="*{email}"
+                           required
+                           placeholder="admin@empresa.com">
+                    <span class="error" id="errorEmail" style="display: none;"></span>
+                </div>
+
+                <div class="form-grupo full-width">
+                    <label for="contrasena">
+                        <i class="fas fa-lock"></i>
+                        Contraseña <span>*</span>
+                    </label>
+                    <input type="password" 
+                           id="contrasena"
+                           th:field="*{contrasena}" 
+                           required 
+                           minlength="6"
+                           placeholder="Mínimo 6 caracteres">
+                    <span class="error" id="errorContrasena" style="display: none;"></span>
+                </div>
+            </div>
+
+            <div class="acciones">
+                <button type="submit" class="btn-primary">
+                    <i th:class="${admin.idAdministrador != null ? 'fas fa-save' : 'fas fa-plus'}"></i>
+                    <span th:text="${admin.idAdministrador != null ? 'Actualizar Administrador' : 'Guardar Administrador'}"></span>
+                </button>
+                
+                <button type="button" onclick="limpiarFormulario()" class="btn-secondary">
+                    <i class="fas fa-eraser"></i>
+                    Limpiar Formulario
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div id="modalConfirmacion" class="modal-overlay">
+    <div class="modal">
+        <h3>
+            <i class="fas fa-exclamation-triangle"></i>
+            Confirmar Eliminación
+        </h3>
+        <p id="mensajeModal"></p>
+        <div class="modal-buttons">
+            <button onclick="cerrarModal()" class="btn-secondary">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </button>
+            <button id="btnConfirmar" class="btn-primary btn-danger">
+                <i class="fas fa-trash-alt"></i>
+                Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript externo -->
+<script src="/js/lista_admin.js" th:src="@{/js/lista_admin.js}"></script>
+</body>
+</html>

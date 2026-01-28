@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/ver_producto.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="fragments/nav :: nav"></div>
+<div class="container">
+    <h2>
+        <i class="fa-solid fa-box-open"></i>
+        Inventario de Productos
+    </h2>
+
+    <!-- MENSAJES DE ÉXITO Y ERROR -->
+    <div th:if="${mensaje}" class="mensaje-exito">
+        <i class="fa-solid fa-circle-check"></i>
+        <span th:text="${mensaje}"></span>
+    </div>
+
+    <div th:if="${error}" class="mensaje-error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- INFO DE PRODUCTOS -->
+    <div class="info-productos">
+        <div class="info-card">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <div>
+                <span class="info-label">Total Productos</span>
+                <span class="info-value" id="totalProductos">0</span>
+            </div>
+        </div>
+        <div class="info-card alert">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <span class="info-label">Stock Bajo</span>
+                <span class="info-value" id="stockBajo">0</span>
+            </div>
+        </div>
+        <div class="info-card warning">
+            <i class="fa-solid fa-exclamation"></i>
+            <div>
+                <span class="info-label">Stock Medio</span>
+                <span class="info-value" id="stockMedio">0</span>
+            </div>
+        </div>
+        <div class="info-card success">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+                <span class="info-label">Stock Normal</span>
+                <span class="info-value" id="stockNormal">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE TABLA -->
+    <div class="seccion">
+        <h3><i class="fa-solid fa-list"></i> Productos Registrados</h3>
+        
+        <div th:if="${productos != null and !productos.empty}">
+            <div style="overflow-x: auto;">
+                <table class="tabla-productos">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NOMBRE</th>
+                            <th>TIPO</th>
+                            <th>MODELO</th>
+                            <th>PRECIO</th>
+                            <th>STOCK</th>
+                            <th>STOCK MÍN.</th>
+                            <th>STOCK MÁX.</th>
+                            <th>ESTADO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr th:each="prod : ${productos}" class="producto-row">
+                            <td th:text="${prod.id}"></td>
+                            <td th:text="${prod.nombre}"></td>
+                            <td th:text="${prod.tipo}"></td>
+                            <td th:text="${prod.modelo}"></td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(prod.precio, 0, 'COMMA', 2, 'POINT')}"></td>
+                            <td>
+                                <span class="badge" 
+                                      th:classappend="${prod.cantidadStock <= prod.stockMinimo} ? 'bajo' : (${prod.cantidadStock < prod.stockMaximo * 0.3} ? 'medio' : '')"
+                                      th:text="${prod.cantidadStock}"
+                                      th:attr="data-stock=${prod.cantidadStock}, data-min=${prod.stockMinimo}, data-max=${prod.stockMaximo}">
+                                </span>
+                            </td>
+                            <td th:text="${prod.stockMinimo}"></td>
+                            <td th:text="${prod.stockMaximo}"></td>
+                            <td>
+                                <span th:if="${prod.cantidadStock <= prod.stockMinimo}" class="estado bajo">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Bajo
+                                </span>
+                                <span th:if="${prod.cantidadStock > prod.stockMinimo and prod.cantidadStock < prod.stockMaximo * 0.3}" class="estado medio">
+                                    <i class="fa-solid fa-exclamation"></i> Medio
+                                </span>
+                                <span th:if="${prod.cantidadStock >= prod.stockMaximo * 0.3}" class="estado normal">
+                                    <i class="fa-solid fa-circle-check"></i> Normal
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINACIÓN -->
+            <div class="pagination-container" id="paginationContainer">
+                <!-- Se genera dinámicamente con JavaScript -->
+            </div>
+        </div>
+
+        <div th:if="${productos == null || productos.empty}" class="empty-state">
+            <i class="fa-solid fa-box-open"></i>
+            <p>No hay productos disponibles en el inventario.</p>
+            <a th:href="@{/productos/agregar}" class="btn-primary">
+                <i class="fa-solid fa-plus"></i> Agregar Primer Producto
+            </a>
+        </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="acciones">
+        <a th:href="@{/productos/agregar}" class="btn-primary">
+            <i class="fa-solid fa-plus"></i> Agregar Nuevo Producto
+        </a>
+        <button type="button" class="btn-secondary" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </button>
+    </div>
+</div>
+
+<script th:src="@{/js/ver_producto.js}"></script>
+
+</body>
+</html>

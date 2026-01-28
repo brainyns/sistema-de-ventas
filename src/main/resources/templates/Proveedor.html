@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Proveedores</title>
+  <link rel="stylesheet" th:href="@{/css/proveedor.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <div th:replace="fragments/nav :: nav"></div>
+  <div class="container">
+    <h1>Proveedores</h1>
+
+    <form th:action="@{/proveedores/guardar}" th:object="${proveedor}" method="post" id="proveedorForm">
+      <div class="grid">
+        <div>
+          <label>Nombre</label>
+          <input type="text" th:field="*{nombre}" required />
+        </div>
+        <div>
+          <label>Teléfono</label>
+          <input type="text" th:field="*{telefono}" />
+        </div>
+        <div class="full">
+          <label>Dirección</label>
+          <input type="text" th:field="*{direccion}" />
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-primary">Guardar Proveedor</button>
+        </div>
+      </div>
+    </form>
+
+    <hr style="border: none; height: 1px; background: #e5e7eb; margin: 30px 0;" />
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="p : ${proveedores}">
+          <td th:text="${p.idProveedor}">1</td>
+          <td th:text="${p.nombre}">Nombre</td>
+          <td th:text="${p.telefono}">Tel</td>
+          <td th:text="${p.direccion}">Direccion</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script th:src="@{/js/proveedores.js}"></script>
+</body>
+</html>

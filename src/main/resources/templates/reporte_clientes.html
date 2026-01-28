@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Clientes</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/ver_cliente.css}">
+    <link rel="stylesheet" th:href="@{/css/reporte_clientes.css}">
+ 
+</head>
+<body>
+    <div th:replace="fragments/nav :: nav"></div>
+    <div class="section">
+        <h2>📋 Reporte de Clientes - <span th:text="${fechaReporte}"></span></h2>
+
+        <div class="top">
+            <strong>Top comprador del día:</strong>
+            <span th:if="${topCliente != null}" th:text="${topCliente.nombre} + ' ' + ${topCliente.apellido} + ' - ' + ${topTotalFormatted}"></span>
+            <span th:if="${topCliente == null}">No hay compras hoy</span>
+        </div>
+
+        <h3 style="margin-top:16px;">Clientes que compraron hoy</h3>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Identificación</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Total Comprado Hoy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="row : ${clientesHoy}">
+                        <td th:text="${row.cliente.identificacion}"></td>
+                        <td th:text="${row.cliente.nombre}"></td>
+                        <td th:text="${row.cliente.apellido}"></td>
+                        <td th:text="${row.formattedTotal}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top:12px;">
+            <a th:href="@{/clientes/reporte/pdf}" class="btn-primary">⬇ Exportar PDF</a>
+            <a th:href="@{/clientes/ver}" class="btn-secondary" style="margin-left:8px;">⬅ Volver</a>
+        </div>
+    </div>
+</body>
+</html>

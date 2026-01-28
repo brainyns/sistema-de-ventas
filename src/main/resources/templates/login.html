@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrador</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+
+    <div class="login-container">
+
+        <!-- FORMULARIO BLANCO CON LOGO DENTRO -->
+        <form th:action="@{/admin/login}" method="post" th:object="${admin}" class="login-form">
+            
+            <!-- Logo DENTRO del formulario -->
+            <div class="logo-container">
+                <img th:src="@{/assets/DriveMaster_Logo.png}" alt="DriveMaster System" class="logo">
+            </div>
+
+            <!-- Subtítulo opcional -->
+            <p class="subtitle">Sistema de puntos de ventas</p>
+           <!-- Campo Usuario -->
+    <div class="form-group">
+    <label for="usuario">Usuario</label>
+    <div class="input-wrapper">
+        <span class="icon">&#128100;</span> <!-- 👤 Usuario -->
+        <input type="text" 
+               id="usuario" 
+               th:field="*{usuario}" 
+               placeholder="Ingresa tu usuario" 
+               required
+               autocomplete="username">
+    </div>
+    </div>
+
+<!-- Campo Contraseña -->
+<div class="form-group">
+    <label for="contrasena">Contraseña</label>
+    <div class="input-wrapper">
+        <span class="icon">&#128274;</span> <!-- 🔒 Candado -->
+        <input type="password" 
+               id="contrasena" 
+               th:field="*{contrasena}" 
+               placeholder="Ingresa tu contraseña" 
+               required
+               autocomplete="current-password">
+        <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Mostrar contraseña">
+            <span id="eye-icon">&#128065;&#8205;&#128488;</span> <!-- 👁‍🗨 Ojo con burbuja -->
+        </button>
+    </div>
+</div>
+            <!-- Recordarme -->
+            <div class="form-group-checkbox">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember" class="checkbox-label">Recordarme</label>
+            </div>
+
+            <!-- Botón de Ingreso -->
+            <button type="submit" class="btn-login">
+                <span class="btn-text">Ingresar al Sistema</span>
+                <span class="btn-loader">⏳</span>
+            </button>
+
+        <!-- Credenciales de prueba FUERA del formulario -->
+        <div class="credentials-info">
+            <p class="credentials-title">Credenciales de prueba:</p>
+            <p>Usuario: <strong>admin</strong></p>
+            <p>Contraseña: <strong>12345</strong></p>
+        </div>
+
+        <!-- Mensaje de error -->
+        <p th:if="${error}" th:text="${error}" class="error-message"></p>
+    </div>
+
+    <script th:src="@{/js/login.js}"></script>
+</body>
+</html>

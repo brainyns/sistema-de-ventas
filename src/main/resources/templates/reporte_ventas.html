@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reporte de Ventas</title>
+
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <link rel="stylesheet" th:href="@{/css/reporte.css}" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div th:replace="fragments/nav :: nav"></div>
+  <div class="container">
+    <header class="header">
+      <div class="header-info">
+        <h2 class="report-title">💹 Reporte de Ventas</h2>
+        <p class="text-muted">Fecha: <small th:text="${fechaReporte}">fecha</small></p>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-primary" th:href="@{/ventas/reporte/pdf}">⬇️ Exportar PDF</a>
+      </div>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">💰 Recaudado hoy</div>
+        <div class="stat-value text-success" th:text="${formattedTotalHoy}">$0.00</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">🧾 Ventas hoy</div>
+        <div class="stat-value" th:text="${ventasHoy}">0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">🏆 Producto más vendido</div>
+        <div class="stat-value" th:text="${#lists.isEmpty(topProductos) ? 'N/A' : topProductos.get(0).get('nombre')}">-</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Cantidad del más vendido</div>
+        <div class="stat-value" th:text="${#lists.isEmpty(topProductos) ? 0 : topProductos.get(0).get('cantidad')}">0</div>
+      </div>
+    </section>
+
+    <section class="main-content">
+      <div class="card">
+        <div class="card-header">Productos más vendidos</div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad vendida</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="p : ${topProductos}">
+                <td th:text="${p.get('nombre')}">Nombre</td>
+                <td th:text="${p.get('cantidad')}">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="card-header">Gráfico - Productos vendidos</div>
+        <div class="card-body">
+          <canvas id="salesChart" height="220"></canvas>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    var salesLabels = /*[[${salesLabels}]]*/ [];
+    var salesData = /*[[${salesData}]]*/ [];
+    /*]]>*/
+  </script>
+
+  <script>
+    (function(){
+      const ctx = document.getElementById('salesChart');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: salesLabels,
+          datasets: [{ label: 'Unidades vendidas', data: salesData, backgroundColor: 'rgba(54,162,235,0.7)' }]
+        },
+        options: { responsive:true }
+      });
+    })();
+  </script>
+</body>
+</html>

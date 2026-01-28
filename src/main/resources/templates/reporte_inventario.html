@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reporte de Inventario - </title>
+
+  <!-- Estilos personalizados -->
+  <link th:href="@{/css/reporte.css}" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div th:replace="fragments/nav :: nav"></div>
+  <div class="container">
+    
+    <!-- ENCABEZADO -->
+    <header class="header">
+      <div class="header-info">
+        <h2 class="report-title">📦 Reporte de Inventario</h2>
+        <p class="text-muted">Gasolinera — <small th:text="${fechaReporte}">fecha</small></p>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-primary" th:href="@{/productos/reporte/pdf}">⬇️ Generar PDF</a>
+        <button class="btn btn-outline" onclick="window.print()">🖨️ Imprimir</button>
+      </div>
+    </header>
+
+    <!-- TARJETAS RESUMEN -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">🏷️ Total de productos</div>
+        <div class="stat-value" th:text="${reporte.totalProductos}">0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">⚠️ Productos con bajo stock</div>
+        <div class="stat-value text-danger" th:text="${reporte.bajoStock}">0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">💰 Valor total estimado</div>
+        <div class="stat-value text-success"
+             th:text="${#numbers.formatDecimal(reporte.valorTotal, 0, 'COMMA', 2, 'POINT')}">$0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">🧮 Tipos de productos</div>
+        <div class="stat-value" th:text="${reporte.tiposDistintos}">0</div>
+      </div>
+    </section>
+
+    <!-- TABLA + GRÁFICOS -->
+    <section class="main-content">
+      <!-- Tabla de productos -->
+      <div class="table-section">
+        <div class="card">
+          <div class="card-header">Lista de productos</div>
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Tipo</th>
+                  <th>Modelo</th>
+                  <th>Precio</th>
+                  <th>Cantidad</th>
+                  <th>Stock Min</th>
+                  <th>Stock Max</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="p : ${reporte.productos}">
+                  <td th:text="${p.id}">1</td>
+                  <td th:text="${p.nombre}">Nombre</td>
+                  <td th:text="${p.tipo}">Tipo</td>
+                  <td th:text="${p.modelo}">Modelo</td>
+                  <td th:text="${#numbers.formatDecimal(p.precio, 0, 'COMMA', 2, 'POINT')}">$0</td>
+                  <td th:text="${p.cantidadStock}">0</td>
+                  <td th:text="${p.stockMinimo}">0</td>
+                  <td th:text="${p.stockMaximo}">0</td>
+                  <td>
+                    <span th:classappend="
+                        ${p.cantidadStock < p.stockMinimo} ? 'badge bg-danger' :
+                        (${p.cantidadStock > p.stockMaximo} ? 'badge bg-warning text-dark' : 'badge bg-success')"
+                          th:text="
+                        ${p.cantidadStock < p.stockMinimo} ? 'Bajo' :
+                        (${p.cantidadStock > p.stockMaximo} ? 'Alto' : 'Normal')">
+                      Estado
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráficos -->
+      <div class="charts-section">
+        <div class="card">
+          <div class="card-header">Distribución por tipo</div>
+          <div class="card-body">
+            <canvas id="pieChart" height="220"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Estado del stock</div>
+          <div class="card-body">
+            <canvas id="barChart" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Variables JS Thymeleaf -->
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    const typeLabels = /*[[${reporte.typeLabels}]]*/ [];
+    const typeData   = /*[[${reporte.typeData}]]*/ [];
+    const stateLabels = /*[[${reporte.stateLabels}]]*/ [];
+    const stateData   = /*[[${reporte.stateData}]]*/ [];
+    /*]]>*/
+  </script>
+
+  <!-- Script personalizado -->
+  <script th:src="@{/js/reporte.js}"></script>
+</body>
+</html>

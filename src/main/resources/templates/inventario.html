@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Reporte de Inventario por Tipo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/inventario.css}">
+</head>
+<body>
+
+    <!-- MENÚ LATERAL FIJO -->
+    <div th:replace="fragments/nav :: nav"></div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-wrapper">
+
+        <!-- HEADER -->
+        <header class="page-header">
+            <h2>📊 Reporte de Inventario por Tipo</h2>
+        </header>
+
+        <!-- BUSCADOR -->
+        <div class="search-box">
+            <label for="buscadorInput" class="search-label">🔍 Buscar por tipo o nombre de producto:</label>
+            <input 
+                type="text" 
+                id="buscadorInput" 
+                class="search-input" 
+                placeholder="Escribe para filtrar..."
+            >
+        </div>
+
+        <!-- MENSAJE SI NO HAY DATOS -->
+        <div th:if="${#maps.isEmpty(reporteInventario)}" class="alert alert-info text-center">
+            No se encontraron productos para mostrar en el inventario.
+        </div>
+
+        <!-- GRUPOS DE PRODUCTOS POR TIPO -->
+        <div th:each="tipo : ${reporteInventario.keySet()}" class="grupo-producto-container">
+
+            <div th:if="${reporteInventario.get(tipo) != null}">
+                <!-- TÍTULO DEL TIPO -->
+                <h3 class="tipo-titulo" th:text="${tipo}"></h3>
+
+                <th:block th:with="
+                    productosBajos=${reporteInventario.get(tipo)?.get('bajos')},
+                    productosExcedidos=${reporteInventario.get(tipo)?.get('excedidos')},
+                    productosOk=${reporteInventario.get(tipo)?.get('ok')}
+                ">
+
+                    <!-- TARJETAS RESUMEN -->
+                    <div class="resumen">
+                        <div class="card-resumen bg-danger">
+                            <h5>🚨 Stock Bajo</h5>
+                            <p th:text="${#lists.size(productosBajos)} + ' Productos'"></p>
+                        </div>
+                        <div class="card-resumen bg-warning">
+                            <h5>⚠️ Sobre-Stock</h5>
+                            <p th:text="${#lists.size(productosExcedidos)} + ' Productos'"></p>
+                        </div>
+                        <div class="card-resumen bg-success">
+                            <h5>✅ Stock Saludable</h5>
+                            <p th:text="${#lists.size(productosOk)} + ' Productos'"></p>
+                        </div>
+                    </div>
+
+                    <!-- TABLA: STOCK BAJO -->
+                    <div class="card-inventario">
+                        <div class="card-header-inventario bg-danger">
+                            <h4>🚨 Stock Bajo</h4>
+                        </div>
+                        <div class="card-body-inventario">
+                            <div th:if="${#lists.isEmpty(productosBajos)}" class="alert alert-light m-0">
+                                No hay productos con stock bajo en este tipo.
+                            </div>
+                            <div th:if="${not #lists.isEmpty(productosBajos)}" class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <tbody>
+                                        <tr th:each="prod : ${productosBajos}">
+                                            <td class="nombre-producto" th:text="${prod.nombre}"></td>
+                                            <td>ID: <span th:text="${prod.id}"></span></td>
+                                            <td>Stock: <span class="badge bg-danger" th:text="${prod.cantidadStock}"></span></td>
+                                            <td>Mínimo: <span th:text="${prod.stockMinimo}"></span></td>
+                                            <td>Faltante: <strong th:text="${prod.stockMinimo - prod.cantidadStock}"></strong></td>
+                                            <td>
+                                                <a th:href="@{/productos/buscar(id=${prod.id})}" class="btn btn-primary btn-sm">
+                                                    Reponer ✏️
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLA: SOBRE-STOCK -->
+                    <div class="card-inventario">
+                        <div class="card-header-inventario bg-warning">
+                            <h4>⚠️ Sobre-Stock</h4>
+                        </div>
+                        <div class="card-body-inventario">
+                            <div th:if="${#lists.isEmpty(productosExcedidos)}" class="alert alert-light m-0">
+                                No hay productos con exceso de stock en este tipo.
+                            </div>
+                            <div th:if="${not #lists.isEmpty(productosExcedidos)}" class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <tbody>
+                                        <tr th:each="prod : ${productosExcedidos}">
+                                            <td class="nombre-producto" th:text="${prod.nombre}"></td>
+                                            <td>ID: <span th:text="${prod.id}"></span></td>
+                                            <td>Stock: <span class="badge bg-warning text-dark" th:text="${prod.cantidadStock}"></span></td>
+                                            <td>Máximo: <span th:text="${prod.stockMaximo}"></span></td>
+                                            <td>Excedente: <strong th:text="${prod.cantidadStock - prod.stockMaximo}"></strong></td>
+                                            <td>
+                                                <a th:href="@{/productos/buscar(id=${prod.id})}" class="btn btn-primary btn-sm">
+                                                    Ajustar ✏️
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLA: STOCK SALUDABLE -->
+                    <div class="card-inventario">
+                        <div class="card-header-inventario bg-success">
+                            <h4>✅ Stock Saludable</h4>
+                        </div>
+                        <div class="card-body-inventario">
+                            <div th:if="${#lists.isEmpty(productosOk)}" class="alert alert-light m-0">
+                                No hay productos con stock saludable en este tipo.
+                            </div>
+                            <div th:if="${not #lists.isEmpty(productosOk)}" class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light sticky-top">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>ID</th>
+                                            <th>Stock Actual</th>
+                                            <th>Rango (Mín - Máx)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="prod : ${productosOk}">
+                                            <td class="nombre-producto" th:text="${prod.nombre}"></td>
+                                            <td th:text="${prod.id}"></td>
+                                            <td><span class="badge bg-success" th:text="${prod.cantidadStock}"></span></td>
+                                            <td th:text="|${prod.stockMinimo} - ${prod.stockMaximo}|"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </th:block>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/inventario.js}"></script>
+</body>
+</html>

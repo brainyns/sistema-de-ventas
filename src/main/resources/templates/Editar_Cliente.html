@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Cliente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/editar_cliente.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="fragments/nav :: nav"></div>
+    
+    <div class="container">
+        <h2><i class="fas fa-user-edit"></i> Editar Cliente</h2>
+
+        <!-- MENSAJES DE ÉXITO Y ERROR -->
+        <div th:if="${exito}" class="mensaje-exito">
+            <i class="fas fa-check-circle"></i>
+            <p th:text="${exito}"></p>
+        </div>
+
+        <div th:if="${error}" class="mensaje-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- SECCIÓN DE BÚSQUEDA -->
+        <div class="seccion">
+            <h3><i class="fas fa-search"></i> Buscar Cliente</h3>
+            <form th:action="@{/clientes/buscar}" method="get">
+                <div class="form-grupo">
+                    <label for="identificacion">
+                        <i class="fas fa-id-card"></i> Ingrese identificación del cliente:
+                    </label>
+                    <div class="search-group">
+                        <input type="number" id="identificacion" name="identificacion" 
+                               th:value="${cliente != null ? cliente.identificacion : ''}" 
+                               placeholder="Ej: 1002456789" required>
+                        <button type="submit" class="btn-search">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- MENSAJE INICIAL -->
+        <div th:if="${cliente == null and error == null}" class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <h4>¿Cómo editar un cliente?</h4>
+                <p>Ingrese la identificación y presione "Buscar" para cargar los datos del cliente.</p>
+            </div>
+        </div>
+
+        <!-- FORMULARIO DE EDICIÓN -->
+        <div th:if="${cliente != null}">
+            <div class="seccion">
+                <h3>
+                    <i class="fas fa-user"></i> 
+                    Editando Cliente ID: 
+                    <span class="cliente-id-badge" th:text="${cliente.identificacion}"></span>
+                </h3>
+                
+               <form th:action="@{/clientes/editar}" method="post" th:object="${cliente}">
+    <input type="text" th:field="*{identificacion}" readonly />
+
+    <!-- Campo oculto para conservar el administrador -->
+    <input type="hidden" th:field="*{administrador}" />6
+
+                    <!-- DATOS PERSONALES -->
+                    <div class="grid-container">
+                        <div class="form-grupo">
+                            <label for="nombre">
+                                <i class="fas fa-user"></i> Nombre:
+                            </label>
+                            <input type="text" id="nombre" th:field="*{nombre}" 
+                                   placeholder="Ingrese el nombre" required>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="apellido">
+                                <i class="fas fa-user"></i> Apellido:
+                            </label>
+                            <input type="text" id="apellido" th:field="*{apellido}" 
+                                   placeholder="Ingrese el apellido" required>
+                        </div>
+                    </div>
+
+                    <!-- CONTACTO -->
+                    <div class="grid-container">
+                        <div class="form-grupo">
+                            <label for="telefono">
+                                <i class="fas fa-phone"></i> Teléfono:
+                            </label>
+                            <input type="text" id="telefono" th:field="*{telefono}" 
+                                   placeholder="Ej: 3001234567">
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="email">
+                                <i class="fas fa-envelope"></i> Correo electrónico:
+                            </label>
+                            <input type="email" id="email" th:field="*{email}" 
+                                   placeholder="correo@ejemplo.com">
+                        </div>
+                    </div>
+
+                    <!-- DIRECCIÓN -->
+                    <div class="form-grupo">
+                        <label for="direccion">
+                            <i class="fas fa-location-dot"></i> Dirección:
+                        </label>
+                        <input type="text" id="direccion" th:field="*{direccion}" 
+                               placeholder="Calle 123 #45-67">
+                    </div>
+
+                    <!-- BOTONES -->
+                    <div class="acciones">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="window.history.back()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SECCIÓN DE ELIMINAR -->
+            <hr>
+            <div class="seccion seccion-eliminar">
+                <h3><i class="fas fa-trash-alt"></i> Eliminar Cliente</h3>
+                <p><strong>⚠️ Advertencia:</strong> Esta acción no se puede deshacer.</p>
+                <a th:href="@{/clientes/eliminar(identificacion=${cliente.identificacion})}" 
+                   class="btn-danger" 
+                   onclick="return confirm('⚠️ ADVERTENCIA: ¿Está seguro de que desea ELIMINAR al cliente?\n\nEsta acción es irreversible.');">
+                   <i class="fas fa-trash-alt"></i> Eliminar Permanentemente
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

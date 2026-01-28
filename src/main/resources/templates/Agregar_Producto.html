@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agregar Producto</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/Agregar_Producto.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="fragments/nav :: nav"></div>
+<div class="container">
+  <a href="/" class="back-button">
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Menú Principal</span>
+  </a>
+
+  <h2>
+    <i class="fa-solid fa-box-open"></i>
+    Agregar Producto
+  </h2>
+
+  <p class="subtitulo">Completa la información para registrar un nuevo producto en el inventario</p>
+
+  <!-- MENSAJES -->
+  <div th:if="${error}" class="mensaje-error">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <span th:text="${error}"></span>
+  </div>
+
+  <div th:if="${exito}" class="mensaje-exito">
+    <i class="fa-solid fa-circle-check"></i>
+    <span th:text="${exito}"></span>
+  </div>
+
+  <!-- INFO BOX -->
+  <div class="info-box">
+    <i class="fa-solid fa-circle-info"></i>
+    <div>
+      <h4>Información del producto</h4>
+      <p>Todos los campos marcados con <span class="required">*</span> son obligatorios. El stock mínimo y máximo ayudarán a gestionar el inventario automáticamente.</p>
+    </div>
+  </div>
+
+  <form th:action="@{/productos/agregar}" 
+        th:object="${producto}" 
+        method="post" 
+        enctype="multipart/form-data"
+        id="formProducto">
+    
+    <!-- INFORMACIÓN BÁSICA -->
+    <div class="seccion">
+      <h3><i class="fa-solid fa-info-circle"></i> Información Básica</h3>
+      <div class="grid-container">
+        
+        <!-- Nombre del producto -->
+        <div class="form-grupo half-width">
+          <label><i class="fa-solid fa-tag"></i> Nombre del producto <span class="required">*</span></label>
+          <input type="text" 
+                 th:field="*{nombre}" 
+                 placeholder="Ej: filtro aceite" 
+                 required>
+        </div>
+
+        <!-- Modelo -->
+        <div class="form-grupo half-width">
+          <label><i class="fa-solid fa-car"></i> Modelo <span class="required">*</span></label>
+          <input type="text" 
+                 th:field="*{modelo}" 
+                 placeholder="Ej: canta 200fg" 
+                 required>
+        </div>
+
+        <!-- Tipo de componente CON ESPECIFICACIONES -->
+        <div class="form-grupo full-width">
+          <label><i class="fa-solid fa-layer-group"></i> Tipo de componente <span class="required">*</span></label>
+          <select th:field="*{tipo}" required>
+            <option value="" disabled selected>-- Selecciona un tipo --</option>
+            <option value="motor">Motor → pistones, válvulas, filtros, bombas, etc.</option>
+            <option value="transmision">Transmisión → embrague, caja, ejes, diferenciales.</option>
+            <option value="suspension">Suspensión y dirección → amortiguadores, rótulas, brazos, resortes.</option>
+            <option value="frenos">Frenos → pastillas, discos, tambores, calipers.</option>
+            <option value="electrico">Sistema eléctrico → batería, alternador, luces, sensores.</option>
+            <option value="escape">Sistema de escape → silenciador, catalizador, tubos.</option>
+            <option value="refrigeracion">Sistema de refrigeración → radiador, ventilador, bomba de agua.</option>
+            <option value="carroceria">Carrocería y accesorios → puertas, espejos, guardabarros, manijas.</option>
+            <option value="interior">Interior y confort → asientos, tablero, cinturones, aire acondicionado.</option>
+            <option value="llantas">Llantas y rines → neumáticos, rines, tapas, válvulas.</option>
+          </select>
+          <small class="help-text">Selecciona la categoría que mejor describa el producto</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTARIO Y PRECIO -->
+    <div class="seccion">
+      <h3><i class="fa-solid fa-warehouse"></i> Inventario y Precio</h3>
+      <div class="grid-container">
+        
+        <!-- Cantidad en stock -->
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-boxes-stacked"></i> Cantidad en stock <span class="required">*</span></label>
+          <input type="number" 
+                 th:field="*{cantidadStock}" 
+                 min="0" 
+                 placeholder="0" 
+                 required>
+        </div>
+
+        <!-- Stock mínimo -->
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-chart-line"></i> Stock mínimo <span class="required">*</span></label>
+          <input type="number" 
+                 th:field="*{stockMinimo}" 
+                 min="1" 
+                 placeholder="0" 
+                 required>
+          <small class="help-text">Alerta cuando llegue a este nivel</small>
+        </div>
+
+        <!-- Stock máximo -->
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-chart-line"></i> Stock máximo <span class="required">*</span></label>
+          <input type="number" 
+                 th:field="*{stockMaximo}" 
+                 min="1" 
+                 placeholder="0" 
+                 required>
+          <small class="help-text">Capacidad máxima de almacenaje</small>
+        </div>
+
+        <!-- Precio -->
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-dollar-sign"></i> Precio (USD) <span class="required">*</span></label>
+          <input type="number" 
+                 th:field="*{precio}" 
+                 step="0.01" 
+                 min="0.01" 
+                 placeholder="0,0" 
+                 required>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGEN -->
+    <div class="seccion">
+      <h3><i class="fa-solid fa-image"></i> Imagen del Producto</h3>
+      <div class="grid-container">
+        <div class="form-grupo full-width">
+          <label><i class="fa-solid fa-upload"></i> Selecciona una imagen <span class="required">*</span></label>
+          
+          <!-- Área de carga de imagen -->
+          <div class="image-upload-container">
+            <input type="file" 
+                   name="archivoImagen" 
+                   accept="image/*" 
+                   id="imageInput"
+                   required
+                   hidden>
+            
+            <div class="image-upload-area" id="uploadArea">
+              <div class="upload-content" id="uploadContent">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p><strong>Haz clic para subir</strong></p>
+                <small>PNG, JPG o WEBP (máx. 5MB)</small>
+              </div>
+              
+              <div class="image-preview" id="imagePreview" style="display: none;">
+                <img id="previewImg" src="" alt="Preview">
+                <div class="preview-overlay">
+                  <button type="button" class="btn-change-image" id="changeImage">
+                    <i class="fa-solid fa-pencil"></i> Cambiar imagen
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="acciones">
+      <button type="submit" class="btn-primary">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Agregar al Inventario
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<!-- SCRIPT PARA PREVIEW DE IMAGEN -->
+<script th:src="@{/js/Agregar_Productos.js}"></script>
+
+</body>
+</html>

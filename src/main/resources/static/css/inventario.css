@@ -1,0 +1,320 @@
+/* ===============================================
+    REPORTE DE INVENTARIO - CENTRADO Y PANTALLA AMPLIA (VERSION 3.0)
+    =============================================== */
+
+/* ✅ ARREGLO PARA EL MENÚ FIJO */
+html {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+}
+
+/* 🎨 Variables y paleta de colores */
+:root {
+    --color-principal: #004aad;
+    --color-secundario: #0066cc;
+    --color-fondo: #f7f9fc;
+    --color-texto: #333;
+    --color-titulo: #002b5c;
+    --color-borde: #dfe6f1;
+    --color-tabla-header: #e8eef8;
+    --color-hover: #eef3fb;
+    --color-danger: #e63946;
+    --color-warning: #ffb703;
+    --color-success: #2a9d8f;
+    --radius: 12px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.05);
+    --transition: all 0.3s ease;
+}
+
+/* 🌍 Reset y tipografía */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    min-height: 100vh;
+    padding-left: 250px;
+}
+
+/* ============================================== */
+/* CONTENEDOR PRINCIPAL */
+/* ============================================== */
+.main-wrapper {
+    width: 95%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ====== Cabecera ====== */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+
+.page-header h2 {
+    font-size: 2.5rem;
+    color: var(--color-principal);
+    margin: 0;
+}
+
+/* ====== Buscador ====== */
+.search-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+}
+
+.search-label {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-titulo);
+    margin-bottom: 10px;
+}
+
+.search-input {
+    padding: 15px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-borde);
+    font-size: 1.1rem;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
+}
+
+/* ====== Tarjetas resumen ====== */
+.resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.card-resumen {
+    background-color: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 25px;
+    text-align: center;
+    transition: var(--transition);
+    border: none;
+}
+
+.card-resumen:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+}
+
+.card-resumen h5 {
+    font-size: 1.2rem;
+    color: inherit;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.card-resumen p {
+    font-size: 2rem;
+    font-weight: bold;
+    color: inherit;
+    margin: 0;
+}
+
+/* Colores de tarjetas */
+.card-resumen.bg-danger { 
+    background: linear-gradient(135deg, #e63946, #d62828);
+    color: #fff; 
+}
+
+.card-resumen.bg-warning { 
+    background: linear-gradient(135deg, #ffb703, #fb8500);
+    color: #000; 
+}
+
+.card-resumen.bg-success { 
+    background: linear-gradient(135deg, #2a9d8f, #264653);
+    color: #fff; 
+}
+
+/* ====== Secciones de productos ====== */
+.grupo-producto-container {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+}
+
+.tipo-titulo {
+    font-size: 2.2rem;
+    color: var(--color-principal);
+    border-bottom: 3px solid var(--color-borde);
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+/* ====== Tarjetas de inventario ====== */
+.card-inventario {
+    background: #fff;
+    border-radius: var(--radius);
+    margin-bottom: 25px;
+    overflow: hidden;
+    border: 1px solid var(--color-borde);
+}
+
+.card-header-inventario {
+    padding: 20px;
+    color: #fff;
+    border-bottom: none;
+}
+
+.card-header-inventario h4 {
+    font-size: 1.5rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.card-header-inventario.bg-danger {
+    background: linear-gradient(135deg, #e63946, #d62828);
+}
+
+.card-header-inventario.bg-warning {
+    background: linear-gradient(135deg, #ffb703, #fb8500);
+    color: #000 !important;
+}
+
+.card-header-inventario.bg-success {
+    background: linear-gradient(135deg, #2a9d8f, #264653);
+}
+
+.card-body-inventario {
+    padding: 20px;
+}
+
+/* ====== Tablas ====== */
+.table-responsive {
+    max-height: 450px;
+    overflow-y: auto;
+    border-radius: var(--radius);
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--color-principal);
+    border-radius: 4px;
+}
+
+.table {
+    margin-bottom: 0 !important;
+}
+
+.table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-tabla-header);
+}
+
+.table th {
+    padding: 15px 20px;
+    font-weight: 600;
+    color: var(--color-titulo);
+}
+
+.table td {
+    padding: 15px 20px;
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: var(--color-hover);
+}
+
+.nombre-producto {
+    font-weight: 600;
+    color: var(--color-principal);
+}
+
+/* Botones */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--color-principal);
+    border-color: var(--color-principal);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-secundario);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 74, 173, 0.3);
+}
+
+/* Badges */
+.badge {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Alertas */
+.alert {
+    border-radius: var(--radius);
+    padding: 15px 20px;
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 768px) {
+    body {
+        padding-left: 0;
+    }
+    
+    .main-wrapper {
+        width: 100%;
+        padding: 20px 15px;
+    }
+    
+    .page-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .tipo-titulo {
+        font-size: 1.6rem;
+    }
+    
+    .resumen {
+        grid-template-columns: 1fr;
+    }
+    
+    .grupo-producto-container {
+        padding: 20px;
+    }
+}

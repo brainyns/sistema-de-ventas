@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Cliente</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/Agregar_Cliente.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+ <div th:replace="fragments/nav :: nav"></div>
+ <div class="container">
+ 
+
+  <h2>
+    <i class="fa-solid fa-user-plus"></i>
+    Registrar Cliente
+  </h2>
+
+  <p class="subtitulo">Completa la información para agregar un nuevo cliente al sistema</p>
+
+  <!-- INFO ADMINISTRADOR -->
+  <div class="admin-info">
+    <i class="fa-solid fa-user-shield"></i>
+    <span>Administrador actual: <b th:text="${adminUsuario}"></b></span>
+  </div>
+
+  <!-- INFO BOX -->
+  <div class="info-box">
+    <i class="fa-solid fa-circle-info"></i>
+    <div>
+      <h4>Datos del cliente</h4>
+      <p>Asegúrate de ingresar correctamente la información del cliente. Todos los campos son obligatorios.</p>
+    </div>
+  </div>
+
+  <form th:action="@{/clientes/nuevo}" method="post" th:object="${cliente}">
+    
+    <!-- INFORMACIÓN PERSONAL -->
+    <div class="seccion">
+      <h3><i class="fa-solid fa-address-card"></i> Información Personal</h3>
+      <div class="grid-container">
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-id-card"></i> Identificación</label>
+          <input type="number" th:field="*{identificacion}" placeholder="Ej: 1234567890">
+          <p class="error" th:if="${#fields.hasErrors('identificacion')}" th:errors="*{identificacion}"></p>
+        </div>
+
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-user"></i> Nombre</label>
+          <input type="text" th:field="*{nombre}" placeholder="Ej: Juan">
+          <p class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></p>
+        </div>
+
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-user"></i> Apellido</label>
+          <input type="text" th:field="*{apellido}" placeholder="Ej: Pérez">
+          <p class="error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFORMACIÓN DE CONTACTO -->
+    <div class="seccion">
+      <h3><i class="fa-solid fa-address-book"></i> Información de Contacto</h3>
+      <div class="grid-container">
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-phone"></i> Teléfono</label>
+          <input type="text" th:field="*{telefono}" placeholder="Ej: 3001234567">
+          <p class="error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></p>
+        </div>
+
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-envelope"></i> Correo electrónico</label>
+          <input type="email" th:field="*{email}" placeholder="Ej: ejemplo@correo.com">
+          <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+        </div>
+
+        <div class="form-grupo">
+          <label><i class="fa-solid fa-location-dot"></i> Dirección</label>
+          <input type="text" th:field="*{direccion}" placeholder="Ej: Calle 10 #20-30">
+          <p class="error" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="acciones">
+      <button type="submit" class="btn-primary">
+        <i class="fa-solid fa-floppy-disk"></i>
+        Registrar Cliente
+      </button>
+    </div>
+
+  </form>
+</div>
+
+</body>
+</html>

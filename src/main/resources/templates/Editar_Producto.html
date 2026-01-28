@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Producto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/editar_Producto.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div th:replace="fragments/nav :: nav"></div>
+
+<div class="container">
+
+    <h2>
+        <i class="fa-solid fa-pen-to-square"></i> Editar Producto
+    </h2>
+
+    <p class="subtitulo">Busca el producto por ID y modifica sus datos</p>
+
+    <div th:if="${exito}" class="mensaje-exito">
+        <i class="fa-solid fa-circle-check"></i>
+        <span th:text="${exito}"></span>
+    </div>
+
+    <div th:if="${error}" class="mensaje-error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span th:text="${error}"></span>
+    </div>
+
+    <div class="seccion">
+        <h3><i class="fa-solid fa-magnifying-glass"></i> Buscar Producto</h3>
+        <form th:action="@{/productos/buscar}" method="get">
+            <div class="grid-container">
+
+                <div class="form-grupo half-width">
+                    <label><i class="fa-solid fa-hashtag"></i> ID del producto</label>
+                    <input type="number"
+                           name="id"
+                           th:value="${producto != null ? producto.id : ''}"
+                           placeholder="Ej: 1"
+                           required>
+                </div>
+
+                <div class="form-grupo" style="display:flex; align-items:flex-end;">
+                    <button type="submit" class="btn-search">
+                        <i class="fa-solid fa-search"></i> Buscar
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${producto == null and error == null}" class="info-box">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+            <h4>¿Cómo editar un producto?</h4>
+            <p>Ingresa el ID y presiona "Buscar". Luego podrás modificar todo.</p>
+        </div>
+    </div>
+
+    <hr th:if="${producto != null}">
+
+    <div th:if="${producto != null}">
+
+        <div style="text-align:center; margin-bottom:20px;">
+			<span class="producto-id-badge">
+				<i class="fa-solid fa-box"></i>
+				Producto ID: <span th:text="${producto.id}"></span>
+			</span>
+        </div>
+
+        <form th:action="@{/productos/editar}" method="post" th:object="${producto}">
+
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="seccion">
+                <h3><i class="fa-solid fa-info-circle"></i> Información Básica</h3>
+
+                <div class="grid-container">
+
+                    <div class="form-grupo half-width">
+                        <label><i class="fa-solid fa-tag"></i> Nombre del producto</label>
+                        <input type="text" th:field="*{nombre}" required>
+                    </div>
+
+                    <div class="form-grupo half-width">
+                        <label><i class="fa-solid fa-car"></i> Modelo</label>
+                        <input type="text" th:field="*{modelo}" required>
+                    </div>
+
+                    <div class="form-grupo full-width">
+                        <label><i class="fa-solid fa-layer-group"></i> Tipo de componente</label>
+                        <select th:field="*{tipo}" required>
+                            <option value="" disabled>-- Selecciona un tipo --</option>
+                            <option value="motor">Motor</option>
+                            <option value="transmision">Transmisión</option>
+                            <option value="suspension">Suspensión y dirección</option>
+                            <option value="frenos">Frenos</option>
+                            <option value="electrico">Sistema eléctrico</option>
+                            <option value="escape">Sistema de escape</option>
+                            <option value="refrigeracion">Refrigeración</option>
+                            <option value="carroceria">Carrocería y accesorios</option>
+                            <option value="interior">Interior y confort</option>
+                            <option value="llantas">Llantas y rines</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="seccion">
+                <h3><i class="fa-solid fa-warehouse"></i> Inventario y Precio</h3>
+                <div class="grid-container">
+
+                    <div class="form-grupo">
+                        <label><i class="fa-solid fa-boxes-stacked"></i> Cantidad en stock</label>
+                        <input type="number" th:field="*{cantidadStock}" required>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label><i class="fa-solid fa-arrow-down"></i> Stock mínimo</label>
+                        <input type="number" th:field="*{stockMinimo}" required>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label><i class="fa-solid fa-arrow-up"></i> Stock máximo</label>
+                        <input type="number" th:field="*{stockMaximo}" required>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label><i class="fa-solid fa-dollar-sign"></i> Precio</label>
+                        <input type="number" th:field="*{precio}" step="0.01" required>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="acciones" style="text-align:center;">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                </button>
+            </div>
+
+        </form>
+
+        <hr style="margin-top: 30px; margin-bottom: 30px;">
+
+        <div class="seccion seccion-eliminar">
+            <h3><i class="fa-solid fa-trash"></i> Eliminar Producto</h3>
+            <p>**Advertencia:** Esta acción no se puede deshacer.</p>
+            <form th:action="@{/productos/eliminar}" method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+                <input type="hidden" name="id" th:value="${producto.id}">
+                <button type="submit" class="btn-danger">
+                    <i class="fa-solid fa-ban"></i> Eliminar Permanentemente
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

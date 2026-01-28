@@ -1,0 +1,114 @@
+<div th:fragment="nav">
+  <nav class="nav-lateral">
+    <ul>
+      <li><a href="#"></a></li>
+    </ul>
+
+    <ul>
+      <!-- Inicio -->
+      <li class="list_item">
+        <div class="list_button">
+          <img th:src="@{/assets/dashboard.png}" class="list_img" alt="DMS">
+        </div>
+      </li>
+
+      <!-- Productos -->
+      <li class="list_item">
+        <div class="list_button list_button--click">
+          <img th:src="@{/assets/package.png}" class="list_img" alt="Productos">
+          <a href="#" class="nav_link">Productos</a>
+          <img th:src="@{/assets/arrow-right-stroke.png}" class="list_arrow" alt="Expandir">
+        </div>
+
+        <ul class="list_show">
+          <li class="list_item">
+            <a href="/productos/agregar" class="nav_link nav_link--inside">Agregar Producto</a>
+          </li>
+          <li class="list_item">
+            <a href="/productos/ver" class="nav_link nav_link--inside">Ver Productos</a>
+          </li>
+          <li class="list_item">
+            <a href="/productos/buscar" class="nav_link nav_link--inside">Editar Producto</a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Clientes -->
+      <li class="list_item">
+        <div class="list_button list_button--click">
+          <img th:src="@{/assets/community.png}" class="list_img" alt="Clientes">
+          <a href="#" class="nav_link">Clientes</a>
+          <img th:src="@{/assets/arrow-right-stroke.png}" class="list_arrow" alt="Expandir">
+        </div>
+
+        <ul class="list_show">
+          <li class="list_item">
+            <a href="/clientes/agregar" class="nav_link nav_link--inside">Agregar Cliente</a>
+          </li>
+          <li class="list_item">
+            <a href="/clientes/ver" class="nav_link nav_link--inside">Ver Clientes</a>
+          </li>
+        
+        </ul>
+      </li>
+
+      <!-- Inventario -->
+      <li class="list_item">
+        <div class="list_button">
+          <img th:src="@{/assets/form.png}" class="list_img" alt="Inventario">
+          <a href="/productos/inventario" class="nav_link">Inventario</a>
+        </div>
+      </li>
+
+      <!-- Ventas -->
+      <li class="list_item">
+        <div class="list_button">
+          <img th:src="@{/assets/cart.png}" class="list_img" alt="Ventas">
+          <a href="/ventas/nueva" class="nav_link">Venta</a>
+        </div>
+      </li>
+
+      <!-- Compras -->
+      <li class="list_item">
+        <div class="list_button">
+          <img th:src="@{/assets/cart-plus.png}" class="list_img" alt="Compras">
+          <a href="/compras/nueva" class="nav_link">Compra de Productos</a>
+        </div>
+      </li>
+
+      <!-- Proveedores -->
+      <li class="list_item">
+        <div class="list_button">
+          <img th:src="@{/assets/proveedor.png}" class="list_img" alt="Proveedores">
+          <a href="/proveedores" class="nav_link">Proveedores</a>
+        </div>
+      </li>
+
+      <!-- Reporte Ventas -->
+      <li class="list_item">
+        <div class="list_button">
+          <img th:src="@{/assets/ventas-totales.png}" class="list_img" alt="Reporte Ventas">
+          <a href="/ventas/reporte" class="nav_link">Reporte de Ventas</a>
+        </div>
+      </li>
+
+      <!-- Reportes -->
+      <li class="list_item">
+        <div class="list_button">
+          <img th:src="@{/assets/file-report.png}" class="list_img" alt="Reportes">
+          <a href="/productos/reporte" class="nav_link">Reportes Inventario</a>
+        </div>
+      </li>
+
+      <!-- Administradores -->
+       <li class="list_item">
+         <div class="list_button">
+           <img th:src="@{/assets/administrador.png}" class="list_img" alt="Administradores">
+           <a href="/admin/lista" class="nav_link">Administradores</a>
+         </div>
+       </li>
+
+    </ul>
+  </nav>
+  <script th:src="@{/js/main.js}"></script>
+</div>

@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ✅ SOLUCIÓN: Reservar espacio para la scrollbar siempre */
+html {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+}
+
+body {
+    background: #eaebef;
+    font-family: "Poppins", sans-serif;
+    padding-left: 280px; /* Espacio para el menú */
+}
+
+.nav_link {
+    color: #303440;
+    display: block;
+    padding: 15px 0;
+    text-decoration: none;
+}
+
+.nav_link--inside {
+    border-radius: 6px;
+    padding-left: 20px;
+    text-align: left;
+}
+
+.nav_link--inside:hover {
+    background: #F6F8FA;
+}
+
+/* ✅ MENÚ LATERAL */
+.nav-lateral {
+    width: 280px; /* Ancho original */
+    height: 100vh;
+    background: #fff;
+    border-radius: 0 16px 16px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0 16px 16px 0;
+    background: #fff;
+}
+
+.list_item {
+    list-style: none;
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+}
+
+.list_button--click {
+    cursor: pointer;
+}
+
+.list_button {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    width: 100%; /* ✅ CAMBIO: ocupar todo el ancho */
+    margin: 0; /* ✅ Sin margen */
+    padding: 0 15px; /* ✅ Padding interno */
+}
+
+.arrow .list_arrow {
+    transform: rotate(90deg);
+}
+
+.list_arrow {
+    margin-left: auto;
+    transition: 0.4s;
+}
+
+.list_show {
+    width: 80%;
+    margin-left: auto;
+    border-left: 2px solid #303440;
+    list-style: none;
+    transition: height 0.4s;
+    height: 0;
+    overflow: hidden;
+}

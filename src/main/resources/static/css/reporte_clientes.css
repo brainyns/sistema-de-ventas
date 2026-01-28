@@ -1,0 +1,14 @@
+/* Estilos para reporte de clientes */
+.section { max-width: 1000px; margin: 24px auto; }
+.top { background:#FEE2E2; padding:12px; border-radius:6px; border:1px solid #DC2626; margin-bottom:12px; }
+.top strong { color:#991B1B; }
+table { width:100%; border-collapse: collapse; background:white; }
+th, td { padding:10px; border:1px solid #eee; text-align:left; }
+thead th { background:#F3F4F6; color:#333; }
+.btn-primary { background:#DC2626; color:white; padding:8px 14px; border-radius:6px; text-decoration:none; }
+.btn-secondary { background:#374151; color:white; padding:8px 14px; border-radius:6px; text-decoration:none; }
+
+@media (max-width:768px) {
+  .section { padding:12px; }
+  table { font-size:14px; }
+}
